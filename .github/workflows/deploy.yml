@@ -1,0 +1,31 @@
+name: Deploy with CodeDeploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::677276093955:role/ec2-role-cicd
+          aws-region: ap-south-1
+
+      - name: Upload Code to S3
+        run: |
+          zip -r deploy.zip . -x "*.git*"
+          aws s3 cp deploy.zip s3://laravel-app-mumbai/deploy.zip
+
+      - name: Trigger CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name my-node-app \
+            --deployment-group-name my-node-app-group \
+            --s3-location bucket=laravel-app-mumbai,key=deploy.zip,bundleType=zip
