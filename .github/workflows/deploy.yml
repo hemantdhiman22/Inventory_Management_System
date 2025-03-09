@@ -16,13 +16,13 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::677276093955:role/github-aws-oicd
+          role-to-assume: arn:aws:iam::${{ secrets.ACC_NO }}:role/github-aws-oicd
           aws-region: ap-south-1
 
       - name: Upload Code to S3
         run: |
           zip -r deploy.zip . -x "*.git*"
-          aws s3 cp deploy.zip s3://laravel-app-mumbai/deploy.zip
+          aws s3 cp deploy.zip s3://${{ secrets.S3_BUCKET }}/deploy.zip
 
       - name: Trigger CodeDeploy
         run: |
