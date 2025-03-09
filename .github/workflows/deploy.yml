@@ -1,10 +1,10 @@
 name: Deploy with CodeDeploy
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+
+permissions:
+  id-token: write # This is required for requesting the JWT
 
 jobs:
   deploy:
@@ -16,7 +16,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::677276093955:role/ec2-role-cicd
+          role-to-assume: arn:aws:iam::677276093955:role/github-aws-oicd
           aws-region: ap-south-1
 
       - name: Upload Code to S3
@@ -27,6 +27,6 @@ jobs:
       - name: Trigger CodeDeploy
         run: |
           aws deploy create-deployment \
-            --application-name my-node-app \
-            --deployment-group-name my-node-app-group \
+            --application-name laravel-app \
+            --deployment-group-name frontend-laravel-app \
             --s3-location bucket=laravel-app-mumbai,key=deploy.zip,bundleType=zip
