@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write # This is required for requesting the JWT
+  id-token: write
 
 jobs:
   deploy:
@@ -17,7 +17,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.ACC_NO }}:role/github-aws-oicd
-          aws-region: ap-south-1
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload Code to S3
         run: |
@@ -27,6 +27,6 @@ jobs:
       - name: Trigger CodeDeploy
         run: |
           aws deploy create-deployment \
-            --application-name laravel-app \
-            --deployment-group-name frontend-laravel-app \
-            --s3-location bucket=laravel-app-mumbai,key=deploy.zip,bundleType=zip
+            --application-name ${{ secrets.APP_NAME }} \
+            --deployment-group-name ${{ secrets.DEPLOY_GROUP }} \
+            --s3-location bucket=${{ secrets.S3_BUCKET }},key=deploy.zip,bundleType=zip
