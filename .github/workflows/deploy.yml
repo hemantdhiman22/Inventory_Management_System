@@ -10,8 +10,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env: 
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      ACC_NO: ${{ secrets.ACC_NO }}
+      #AWS_REGION: ${{ secrets.AWS_REGION }}
+      #ACC_NO: ${{ secrets.ACC_NO }}
       S3_BUCKET: ${{ secrets.S3_BUCKET }}
       APP_NAME: ${{ secrets.APP_NAME }}
       DEPLOY_GROUP: ${{ secrets.DEPLOY_GROUP }}
@@ -23,8 +23,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::$ACC_NO:role/github-aws-oicd
-          aws-region: ap-south-1
+          role-to-assume: arn:aws:iam::${{ secrets.ACC_NO }}:role/github-aws-oicd
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload Code to S3
         run: |
